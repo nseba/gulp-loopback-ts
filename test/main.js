@@ -19,7 +19,23 @@ describe('gulp-loopback-ts', function() {
         stream.write(emptyFile);
     });
     
-    // it('Generates a file with the same name as the input and the extension .d.ts', function() {
-
-    // })
+    it("should emit error when file isStream()", function(done){
+       var stream = loopbackTs();
+       
+       var streamFile= {
+           "isNull": function(){
+               return false;
+           },
+           "isStream": function(){
+               return true;
+           }
+       } 
+       
+       stream.on("error", function(err){
+           err.message.should.equal("Streaming not supported");
+           done();
+       });
+       
+       stream.write(streamFile);
+    });
 })
