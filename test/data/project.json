@@ -1,0 +1,43 @@
+{
+  "name": "Project",
+  "plural": "Projects",
+  "base": "PersistedModel",
+  "strict": false,
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "styles": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "members": {
+      "type": "hasMany",
+      "model": "AppUser",
+      "foreignKey": "projectId",
+      "through": "ProjectMember"
+    },
+    "tasks": {
+      "type": "hasMany",
+      "model": "Task",
+      "foreignKey": "projectId"
+    },
+    "logo": {
+      "type": "hasOne",
+      "model": "Attachment",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

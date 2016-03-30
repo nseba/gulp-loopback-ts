@@ -1,0 +1,21 @@
+{
+  "name": "AppUser",
+  "base": "User",
+  "strict": false,
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "projects": {
+      "type": "hasMany",
+      "model": "Project",
+      "foreignKey": "memberUserId",
+      "through": "ProjectMember"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

@@ -1,0 +1,26 @@
+{
+  "name": "Attachment",
+  "plural": "Attachments",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "mimeType": {
+      "type": "string",
+      "required": true
+    },
+    "data": {
+      "type": "string",
+      "required": true
+    },
+    "fileName": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
