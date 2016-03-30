@@ -28,11 +28,12 @@
     "event-stream": "^3.3.2",
     "fs": "0.0.2",
     "mocha": "^2.4.5",
+    "path": "^0.12.7",
     "should": "^8.3.0",
     "vinyl": "^1.1.1"
   },
   "dependencies": {
-    "gulp-util": "^3.0.7",    
+    "gulp-util": "^3.0.7",
     "through2": "^2.0.1"
   }
 }

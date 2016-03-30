@@ -1,0 +1,13 @@
+{
+    "plural": "Tests",
+    "base": "BaseModel",
+    "properties": {
+        "required": {
+            "type": "boolean",
+            "required": true
+        },
+        "optional": {
+            "type": "string"
+        }
+    }
+}
