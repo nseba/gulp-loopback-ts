@@ -1,0 +1,9 @@
+{
+  "name": "Injected",
+  "idInjection": true,
+  "properties": {
+      "someProperty": {          
+          "type": "Number"
+      }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "Primary",
+  "properties": {
+      "primaryId": {
+          "id": true,
+          "type": "string"
+      }
+  }
+}
