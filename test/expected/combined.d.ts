@@ -10,4 +10,5 @@ interface Injected {
 interface Related {
     relationship1Id: string;
     relationship2Id: number;
+    noForeignKeyId: number;
 }

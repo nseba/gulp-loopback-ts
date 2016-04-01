@@ -1,15 +1,20 @@
 {
-  "name": "Related",
-  "relations": {
-    "relation1": {
-      "type": "belongsTo",
-      "model": "Primary",
-      "foreignKey": "relationship1Id"
-    },
-    "relation2": {
-      "type": "belongsTo",
-      "model": "Injected",
-      "foreignKey": "relationship2Id"
+    "name": "Related",
+    "relations": {
+        "relation1": {
+            "type": "belongsTo",
+            "model": "Primary",
+            "foreignKey": "relationship1Id"
+        },
+        "relation2": {
+            "type": "belongsTo",
+            "model": "Injected",
+            "foreignKey": "relationship2Id"
+        },
+        "noForeignKey": {
+            "type": "belongsTo",
+            "model": "Injected",
+            "foreignKey": ""
+        }
     }
-  }
 }
