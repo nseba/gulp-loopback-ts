@@ -7,6 +7,7 @@ module.exports = function(models) {
         idTypes: {},
         deferredResolutions: []
     }
+
     function createProperty(output, name, type, required) {
         output.properties.push({
             name: name,
@@ -15,13 +16,13 @@ module.exports = function(models) {
         });
     }
 
-    function getForeignKeyName(foreignKey, relationName){
-         if(foreignKey && foreignKey.length) return foreignKey;
-         
-         return _.camelCase(relationName)+"Id";                   
+    function getForeignKeyName(foreignKey, relationName) {
+        if (foreignKey && foreignKey.length) return foreignKey;
+
+        return _.camelCase(relationName) + "Id";
     }
 
-    function extractInterface(model) {
+    function extractInterface(model, prepend) {
         var item = {
             name: model.name,
             extends: model.base,
@@ -32,11 +33,15 @@ module.exports = function(models) {
         extractProperties(item, model);
         extractRelations(item, model);
 
-        project.interfaces.push(item);
+        if (prepend) {
+            project.interfaces.unshift(item);
+        } else {
+            project.interfaces.push(item);
+        }
     }
 
     function extractInjectedId(item, model) {
-        if (!model.idInjection) return;
+        if (model.idInjection === false) return;
         createProperty(item, "id", "number", true);
         project.idTypes[model.name] = "number";
     }
@@ -56,8 +61,6 @@ module.exports = function(models) {
             project.idTypes[item.name] = property.type;
         }
     }
-
-
 
     function extractRelations(item, model) {
 
@@ -97,10 +100,50 @@ module.exports = function(models) {
 
         createProperty(item, relation.foreignKey, project.idTypes[relation.model], true);
     }
-    
-    function extractHasOne(item, relationName, relation, model){
-        
+
+    function extractHasOne(item, relationName, relation, model) {
+        createProperty(item, relationName, "Relation<" + relation.model + ">", true);        
+        project.emitRelation = true;
+
+        var foreignKey = getForeignKeyName(relation.foreignKey, relationName);
+        var itemIdType = project.idTypes[item.name];
+
+        var relatedItem = _.find(project.interfaces, function(ri) {
+            return ri.name === relation.model;
+        });
+
+        if (relatedItem) {
+            var relatedProperty = _.find(relatedItem.properties, function(prop) {
+                return prop.name === foreignKey;
+            });
+
+            if (!relatedProperty) {
+                createProperty(relatedItem, foreignKey, itemIdType, true);
+            }
+        } else {
+            var relatedModel = _.find(models, function(rm) {
+                return rm.name === relation.model;
+            });
+
+            if (relatedModel) {
+                var hasProperty = false;
+                for (var propName in relatedModel.properties) {
+                    if (relatedModel.properties.hasOwnProperty(propName) && propName === foreignKey) {
+                        hasProperty = true;
+                        break;
+                    }
+                }
+
+                if (!hasProperty) {
+                    relatedModel.properties[foreignKey] = {
+                        "type": itemIdType,
+                        "required": true,
+                    }
+                }
+            }
+        }
     }
+
 
     function resolveRelations() {
         project.deferredResolutions.forEach(function(dfd) {

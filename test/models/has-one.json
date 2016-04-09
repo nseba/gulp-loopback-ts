@@ -1,0 +1,10 @@
+{
+    "name": "Related",
+    "relations": {            
+        "hasOneRelation": {
+            "type": "hasOne",
+            "model": "Primary",
+            "foreignKey": "relatedId"
+        }
+    }
+}

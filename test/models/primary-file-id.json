@@ -1,5 +1,6 @@
 {
   "name": "Primary",
+  "idInjection": false,
   "properties": {
       "primaryId": {
           "id": true,

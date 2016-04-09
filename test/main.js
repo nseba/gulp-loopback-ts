@@ -22,7 +22,7 @@ function compileFile(inputFileName, outputFileName, done) {
 
     var stream = loopbackTs();
 
-    stream.on("data", function(tsdFile) {        
+    stream.on("data", function(tsdFile) {
         should.exist(tsdFile);
         should.exist(tsdFile.path);
         should.exist(tsdFile.relative);
@@ -31,8 +31,8 @@ function compileFile(inputFileName, outputFileName, done) {
 
         String(tsdFile.contents).should.equal(
             fs.readFileSync(path.join(__dirname, 'expected/' + outputFileName), 'utf-8')
-        );        
-        
+        );
+
         done();
     });
 
@@ -42,16 +42,16 @@ function compileFile(inputFileName, outputFileName, done) {
 
 describe('gulp-loopback-ts', function() {
     it("should pass file when it isNull()", function(done) {
-        var stream = loopbackTs();        
+        var stream = loopbackTs();
         var emptyFile = {
             'isNull': function() {
                 return true;
             }
         };
 
-        stream.on('data', function(data) {            
+        stream.on('data', function(data) {
             data.should.equal(emptyFile);
-            done();            
+            done();
         });
         stream.write(emptyFile);
         stream.end();
@@ -70,8 +70,8 @@ describe('gulp-loopback-ts', function() {
         }
 
         stream.on("error", function(err) {
-            err.message.should.equal("Streaming not supported");    
-            done();        
+            err.message.should.equal("Streaming not supported");
+            done();
         });
 
         stream.write(streamFile);
@@ -88,7 +88,7 @@ describe('gulp-loopback-ts', function() {
         var stream = loopbackTs();
 
         stream.on("error", function(err) {
-            err.message.should.equal("Missing model 'name' member.");            
+            err.message.should.equal("Missing model 'name' member.");
             done();
         });
         stream.write(invalidJsonFile);
@@ -102,22 +102,21 @@ describe('gulp-loopback-ts', function() {
     it("should compile multiple files into a single output", function(done) {
         var files = [
             createVinyl("primary-file-id.json"),
-            createVinyl("primary-file-injected-id.json"),
-            createVinyl("related-file.json")];
+            createVinyl("primary-file-injected-id.json")];            
 
-        var stream = loopbackTs("combined.d.ts");
+        var stream = loopbackTs("multiple.d.ts");
 
         stream.on("data", function(tsdFile) {
             should.exist(tsdFile);
             should.exist(tsdFile.path);
             should.exist(tsdFile.relative);
             should.exist(tsdFile.contents);
-            should.equal(path.basename(tsdFile.path), "combined.d.ts");
+            should.equal(path.basename(tsdFile.path), "multiple.d.ts");
 
             String(tsdFile.contents).should.equal(
-                fs.readFileSync(path.join(__dirname, 'expected/combined.d.ts'), 'utf-8')
-            );            
-            
+                fs.readFileSync(path.join(__dirname, 'expected/multiple.d.ts'), 'utf-8')
+            );
+
             done();
         });
 
@@ -126,9 +125,63 @@ describe('gulp-loopback-ts', function() {
         })
 
         stream.end();
-    })
+    });
 
-    // it("should compile a file with belongsTo relationships", function(done){
-    //     compileFile("belongs-to.json", "belongs-to.d.ts",done);
-    // })
+    it("should resolve belongsTo relations", function(done) {
+        var files = [
+            createVinyl("primary-file-id.json"),
+            createVinyl("primary-file-injected-id.json"),
+            createVinyl("belongs-to.json")];
+
+        var stream = loopbackTs("belongsTo.d.ts");
+
+        stream.on("data", function(tsdFile) {
+            should.exist(tsdFile);
+            should.exist(tsdFile.path);
+            should.exist(tsdFile.relative);
+            should.exist(tsdFile.contents);
+            should.equal(path.basename(tsdFile.path), "belongsTo.d.ts");
+
+            String(tsdFile.contents).should.equal(
+                fs.readFileSync(path.join(__dirname, 'expected/belongsTo.d.ts'), 'utf-8')
+            );
+
+            done();
+        });
+
+        files.forEach(function(file) {
+            stream.write(file);
+        })
+
+        stream.end();
+    });
+
+    it("should resolve hasOne relations", function(done) {
+        var files = [
+            createVinyl("primary-file-id.json"),
+            createVinyl("primary-file-injected-id.json"),
+            createVinyl("has-one.json")];
+
+        var stream = loopbackTs("hasOne.d.ts");
+
+        stream.on("data", function(tsdFile) {
+            should.exist(tsdFile);
+            should.exist(tsdFile.path);
+            should.exist(tsdFile.relative);
+            should.exist(tsdFile.contents);
+            should.equal(path.basename(tsdFile.path), "hasOne.d.ts");
+
+            String(tsdFile.contents).should.equal(
+                fs.readFileSync(path.join(__dirname, 'expected/hasOne.d.ts'), 'utf-8')
+            );
+
+            done();
+        });
+
+        files.forEach(function(file) {
+            stream.write(file);
+        })
+
+        stream.end();
+    });
 })
